@@ -3,25 +3,24 @@ const express=require('express');
 const app=express();
 app.use(express.json());
 let blogs=[];
+
+//getting only a particular record
 app.get("/user/:id",async(req,res)=>{
-    try{
-  let t=req.params;
-  
+   
   let obj = blogs.find(o => o.id === req.params.id);
   console.log(obj);
   if(obj==undefined) res.send("No such id");
-  else //res.send(obj +"fetched successfully");
-  res.send({
-    'id':obj.id,
-    'title':obj.title,
-    'summary':obj.summary
+  else
+  res.send(obj)
 
-  })
- }
-  catch(err){
-    console.log(err);
-  }
 })
+
+//geeting all records
+app.get("/allBlogs",async(req,res)=>{
+    res.send(blogs);
+})
+
+
 
 
 app.post("/postBlog",async(req,res)=>{
