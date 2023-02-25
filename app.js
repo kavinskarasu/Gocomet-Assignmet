@@ -8,33 +8,42 @@ app.use(express.json());
 
 
 //getting only a particular record
-app.get("/blog/:id",async(req,res)=>{
-    try{
+app.get("/blog/:id",async(req,result)=>{
+    
    let query=(`SELECT * FROM blog where id=${req.params.id}`);
   
    client.query(query,(err,res)=>{
-    
-    const obj=CircularJSON.stringify(res.rows);
-    console.log(obj)
+    const obj=res.rows
+    result.status(200).json({
+        status:"success",
+        data:{
+            obj
+        }
+    })
 })
-    }catch(err){
-        res.send(err);
-    }
+    
 
 })
 
 //geeting all records
-app.get("/blogs",async(req,res)=>{
+app.get("/blogs",async(req,result)=>{
     client.query(`select * from blog`,(err,res)=>{
-        console.log(res.rows);
+      
+        const obj=res.rows;
+        result.status(200).json({
+            status:"success",
+            data:{
+                obj
+            }
+        })
     })
-    res.send("j");
+
 })
 
 
 
 
-app.post("/blogs",async(req,res)=>{
+app.post("/blogs",async(req,result)=>{
    
     const query = `INSERT INTO blog(id, title, author, summary) VALUES(${req.body.id},'${req.body.Title}','${req.body.Author}','${req.body.Summary}')`;
 
@@ -43,7 +52,10 @@ app.post("/blogs",async(req,res)=>{
         console.log(err,res);
         client.end();
     })
-    res.send("posted")
+    result.status(200).json({
+        status:"success",
+        data:"Posted"
+    })
    
 })
 
