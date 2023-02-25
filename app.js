@@ -1,40 +1,55 @@
+const { json } = require('body-parser');
 const express=require('express');
+const CircularJSON = require('circular-json');
 
+const client=require('./Database.js')
 const app=express();
 app.use(express.json());
-let blogs=[];
+
 
 //getting only a particular record
-app.get("/user/:id",async(req,res)=>{
-   
-  let obj = blogs.find(o => o.id === req.params.id);
-  console.log(obj);
-  if(obj==undefined) res.send("No such id");
-  else
-  res.send(obj)
+app.get("/blog/:id",async(req,res)=>{
+    try{
+   let query=(`SELECT * FROM blog where id=${req.params.id}`);
+  
+   client.query(query,(err,res)=>{
+    
+    const obj=CircularJSON.stringify(res.rows);
+    console.log(obj)
+})
+    }catch(err){
+        res.send(err);
+    }
 
 })
 
 //geeting all records
-app.get("/allBlogs",async(req,res)=>{
-    res.send(blogs);
+app.get("/blogs",async(req,res)=>{
+    client.query(`select * from blog`,(err,res)=>{
+        console.log(res.rows);
+    })
+    res.send("j");
 })
 
 
 
 
-app.post("/postBlog",async(req,res)=>{
-    console.log(req.body);
-    blogs.push(req.body);
+app.post("/blogs",async(req,res)=>{
+   
+    const query = `INSERT INTO blog(id, title, author, summary) VALUES(${req.body.id},'${req.body.Title}','${req.body.Author}','${req.body.Summary}')`;
+
+   
+    client.query(query,(err,res)=>{
+        console.log(err,res);
+        client.end();
+    })
     res.send("posted")
-    console.log(blogs);
+   
 })
-
 
 app.listen(3000,()=>{
     console.log("Server is running on Port 3000")
 })
-
 
 
 
