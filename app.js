@@ -12,9 +12,9 @@ app.get("/blog/:id",async(req,result)=>{
    try{
     let query=(`SELECT * FROM blog where id='${req.params.id}'`);
 
-   console.log(req.params.id)
+  
    client.query(query,(err,res)=>{
-    console.log(err)
+   
     let obj;
    if(res==undefined) obj="Not found"
    else obj=res.rows;
@@ -43,7 +43,7 @@ app.get("/blogs",async(req,result)=>{
     client.query(`select * from blog`,(err,res)=>{
       
         const obj=res.rows;
-        console.log(obj)
+       
         result.status(200).json({
             status:"success",
             data:{
@@ -132,13 +132,13 @@ app.post("/blogs",verifyToken,async(req,result)=>{
 app.post('/adminlogin',(req,result)=>{
     const userName=req.body.username;
     const password=req.body.password;
-    console.log(userName+" "+password)
+   
     const query = 'SELECT * FROM admin WHERE username=$1 AND password=$2';
     const values = [userName, password];
      client.query(query,values,(err,res)=>{
         const data=res.rows;
         if(err){
-            console.log(err)
+            
             result.status(500).json({
                 status:"failure",
                 data:"Something went worng",
@@ -167,7 +167,7 @@ function verifyToken(req,result,next){
     if(typeof bearerHeader!=='undefined'){
         const bearer=bearerHeader.split(' ')[1];
         jwt.verify(bearer,process.env.ACCESS_TOKEN,(err,res)=>{
-            console.log(res+"jj");
+           
             if(typeof res!='undefined'){
              
                 next();
