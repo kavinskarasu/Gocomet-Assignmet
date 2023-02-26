@@ -1,12 +1,9 @@
 
-const express=require('express');
-const client=require('./Database.js')
-const app=express();
-app.use(express.json());
+
 const getBlogs=require('./webScraping');
 const jwt=require('jsonwebtoken')
 const dotenv=require('dotenv').config()
-
+const dp=require('./models')
 //getting only a particular record
 app.get("/blog/:id",async(req,result)=>{
    try{
@@ -189,12 +186,10 @@ function verifyToken(req,result,next){
     }
     
 }
-
-app.listen(3000,()=>{
-    console.log("Server is running on Port 3000")
-})
+dp.sequelize.sync().then((req)=>{
 
 
+});
 
 
 
