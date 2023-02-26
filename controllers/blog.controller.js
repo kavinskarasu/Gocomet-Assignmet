@@ -42,7 +42,7 @@ exports.create = async(req, res) => {
       });
   };
 
-  // Find a single Tutorial with an id
+  // Find a single Blogs with an id
 exports.findOne = (req, res) => {
     const id = req.params.id;
   
@@ -80,7 +80,7 @@ exports.findAll = (req, res) => {
       });
   };
 
-// Delete a Tutorial with the specified id in the request
+// Delete a Blog with the specified id in the request
 exports.delete = (req, res) => {
     const id = req.params.id;
   
