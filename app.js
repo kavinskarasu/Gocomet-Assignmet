@@ -3,14 +3,15 @@ const express=require('express');
 const client=require('./Database.js')
 const app=express();
 app.use(express.json());
-const axios=require('axios');
-const cheerio=require('cheerio')
 const getBlogs=require('./webScraping');
+const jwt=require('jsonwebtoken')
+const dotenv=require('dotenv').config()
 
 //getting only a particular record
 app.get("/blog/:id",async(req,result)=>{
    try{
-   let query=(`SELECT * FROM blog where id=${req.params.id}`);
+    let query=(`SELECT * FROM blog where id='${req.params.id}'`);
+
    console.log(req.params.id)
    client.query(query,(err,res)=>{
     console.log(err)
@@ -30,6 +31,7 @@ app.get("/blog/:id",async(req,result)=>{
         err
     })
    }
+   
     
 
 })
@@ -57,10 +59,34 @@ app.get("/blogs",async(req,result)=>{
     }
 })
 
+app.get('/blogs/:getbycategories',(req,result)=>{
+    try{
+      
+        let query=(`SELECT * FROM blog where tag='${req.params.getbycategories}'`);
+    
+       client.query(query,(err,res)=>{
+        let obj;
+       if(res==undefined) obj="Not found"
+       else obj=res.rows;
+        result.status(200).json({
+            status:"success",
+            data:{
+                obj
+            }
+        })
+    })
+       }catch(err){
+        result.status(500).json({
+            status:"failure",
+            err
+        })
+       }
+        
+})
 
 
 
-app.post("/blogs",async(req,result)=>{
+app.post("/blogs",verifyToken,async(req,result)=>{
    
    
     const url=req.body.url;
@@ -103,6 +129,66 @@ app.post("/blogs",async(req,result)=>{
 
 
 
+app.post('/adminlogin',(req,result)=>{
+    const userName=req.body.username;
+    const password=req.body.password;
+    console.log(userName+" "+password)
+    const query = 'SELECT * FROM admin WHERE username=$1 AND password=$2';
+    const values = [userName, password];
+     client.query(query,values,(err,res)=>{
+        const data=res.rows;
+        if(err){
+            console.log(err)
+            result.status(500).json({
+                status:"failure",
+                data:"Something went worng",
+                err
+            })
+     
+        }
+        else if(data.length==0){
+            result.status(401).json({
+                status:"failure",
+                data:"Please provide correct credentials"
+            })
+        }
+        jwt.sign({userName,password},process.env.ACCESS_TOKEN,(err,token)=>{
+            result.json({
+                token
+            })
+        })
+     })
+    
+
+})
+
+function verifyToken(req,result,next){
+    const bearerHeader=req.headers['authorization'];
+    if(typeof bearerHeader!=='undefined'){
+        const bearer=bearerHeader.split(' ')[1];
+        jwt.verify(bearer,process.env.ACCESS_TOKEN,(err,res)=>{
+            console.log(res+"jj");
+            if(typeof res!='undefined'){
+             
+                next();
+            }
+            else{
+                result.status(403).json({
+                    status:"failure",
+                    data:"unauthorized"
+                })
+            }
+        })
+    
+       
+    }else{
+        result.status(403).json({
+            status:"failure",
+            data:"unauthorized"
+        })
+    }
+    
+}
 
 app.listen(3000,()=>{
     console.log("Server is running on Port 3000")
