@@ -4,33 +4,20 @@ const axios=require('axios')
 
 async function getBlogs(url){
     try{
-        const responce=await axios.get(url);
-       
-        const $=cheerio.load(responce.data);
-        
-             const content=$('article');
-             
-          
-                title=$(content).find('h1.post-full-title').text().trim();
-                author=$(content).find('.author-card-content-no-bio').text().trim();
-                time=$(content).find('time').text().trim();
-                tag=$(content).find('header a').text().trim();
-                summary=$(content).find('.post-content p').text();
-                
-               
-          const obj={
-              author,
-              title,
-              time,
-              tag,
-              summary
-          }
+        const response = await axios.get(url);
+        const $=cheerio.load(response.data);
+        let obj = {};
+        const content=$('article');
+        obj.title=$(content).find('h1.post-full-title').text().trim();
+        obj.author=$(content).find('.author-card-content-no-bio').text().trim();
+        obj.time=$(content).find('time').text().trim();
+        obj.tag=$(content).find('header a').text().trim();
+        obj.summary=$(content).find('.post-content p').text();
          
         return obj;
-       
     }catch(err){
         console.log(err);
-    return undefined;
+        return null;
     }
 }
 

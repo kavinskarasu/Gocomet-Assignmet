@@ -1,9 +1,9 @@
 module.exports = (sequelize, Sequelize) => {
     const blog = sequelize.define("blog", {
       id:{
-            type:Sequelize.STRING,
-             primaryKey: true
-        },
+        type:Sequelize.STRING,
+        primaryKey: true
+      },
       title: {
         type: Sequelize.STRING,
       },

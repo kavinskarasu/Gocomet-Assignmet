@@ -1,8 +1,7 @@
-const express=require('express');
-const route=express.Router();
-const authController=require('../controllers/login');
-route.get("/",authController.findAdmin);
-route.delete("/",authController.deleteAll);
-route.delete("/:id",authController.delete);
+const express = require('express');
+const Admin = require('../controllers/login');
+
+const route = express.Router();
+route.post("/", Admin.login);
 
 module.exports=route;
