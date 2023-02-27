@@ -1,10 +1,12 @@
 const dbConfig=require('../config/db.cofig')
+const dotenv=require('dotenv').config()
 
 const Sequelize = require("sequelize");
-const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
-  host: dbConfig.HOST,
-  dialect: dbConfig.dialect,
-  port:32768
+// console.log(process.env.DB_PORT, "check")
+const sequelize = new Sequelize(process.env.DB, process.env.USER_DB, process.env.PASSWORD, {
+  host: process.env.HOST,
+  dialect: process.env.dialect,
+  port:process.env.DB_PORT
 });
 
 const db = {};
