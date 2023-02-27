@@ -1,6 +1,13 @@
+const express=require('express');
+const app=express();
+const cors = require('cors');
+app.use(express.json());
+app.use(cors())
 
-const express = require("express");
-const blogs=require('./router/blog.router');
-const admin=require('./router/admin.route')
+const blogs=require('./router/blog');
+const admin=require('./router/admin');
+app.use(express.json());
 app.use('/blogs',blogs);
-app.use('/admin',admin);
+app.use('/adminlogin',admin);
+
+module.exports=app;

@@ -20,11 +20,13 @@ exports.create = async(req, res) => {
     data:"someting went worng please try again"
    })
    var fields = url.split('/');
+   let tag=data.tag.split('#');
+  
     const content = {
       id: fields[4],
       title:data.title,
       description:data.summary,
-      categories:data.tag,
+      categories:tag[1],
       time:data.time,
       author:data.author
       
@@ -45,7 +47,7 @@ exports.create = async(req, res) => {
   // Find a single Blogs with an id
 exports.findOne = (req, res) => {
     const id = req.params.id;
-  
+   
     blog.findByPk(id)
       .then(data => {
         if (data) {
@@ -79,54 +81,25 @@ exports.findAll = (req, res) => {
         });
       });
   };
-
-// Delete a Blog with the specified id in the request
-exports.delete = (req, res) => {
-    const id = req.params.id;
+//Reteriving blogs by tag
+exports.findByTag = (req, res) => {
+  const categories = req.params.id;
   
-    blog.destroy({
-      where: { id: id }
-    })
-      .then(num => {
-        if (num == 1) {
-          res.send({
-            message: "Blogs was deleted successfully!"
-          });
-        } else {
-          res.send({
-            message: `Cannot delete Blogs with id=${id}. Maybe Blog was not found!`
-          });
-        }
-      })
-      .catch(err => {
-        res.status(500).send({
-          message: "Could not delete Blogs with id=" + id
+  blog.findAll({ where: { categories: req.params.id }})
+    .then(data => {
+      if (data) {
+        res.send(data);
+      } else {
+        res.status(404).send({
+          message: `Cannot find Blog with id=${categories}.`,
+          
         });
+      }
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: "Error rin etrieving the Blog with id=" + categories
       });
+    });
   };
   
-  // Delete all Blogs from the database.
-  exports.deleteAll = (req, res) => {
-    blog.destroy({
-      where: {},
-      truncate: false
-    })
-      .then(nums => {
-        res.send({ message: `${nums} Blogs were deleted successfully!` });
-      })
-      .catch(err => {
-        res.status(500).send({
-          message:
-            err.message || "Some error occurred while removing all Blogs."
-        });
-      });
-  };
-  
-  
-  
-
-
-
-
-
- 
