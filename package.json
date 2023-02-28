@@ -20,6 +20,9 @@
     "nodemon": "^2.0.20",
     "pg": "^8.6.0",
     "pg-hstore": "^2.3.4",
-    "sequelize": "^5.21.3"
+    "sequelize": "^5.21.3",
+    "serverless-auto-swagger": "^2.12.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^4.6.2"
   }
 }
